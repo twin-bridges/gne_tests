@@ -6,7 +6,6 @@ from datetime import datetime
 
 @pytest.fixture(scope="session", autouse=True)
 def backup_and_restore_gitconfig():
-
     # BEFORE TESTS ####
     home = Path.home()
     gitconfig = home / ".gitconfig"
