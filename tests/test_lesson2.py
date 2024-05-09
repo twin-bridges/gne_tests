@@ -1,9 +1,7 @@
 import pytest
-from pathlib import Path
-from utilities import subprocess_runner, file_dir_exists
 
-GIT = "/usr/bin/git"
-REPOSITORY = Path.home() / "gne_exercises"
+from utilities import subprocess_runner, file_dir_exists, git_checkout
+from TEST_CONSTANTS import GIT, REPOSITORY, DEFAULT_BRANCH
 
 
 def test_exercise3():
@@ -22,6 +20,20 @@ def test_exercise3():
         ("lesson2", "simple.py"),
     ],
 )
-def test_exercise4(directory, filename):
+def test_exercise4a(directory, filename):
     directory = REPOSITORY / directory
     file_dir_exists(directory, filename)
+
+
+def test_exercise4b():
+    commit = "d96bda4"
+    git_checkout(commit)
+
+    cmd_list = ["python3", "simple.py"]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+
+    assert return_code == 0
+    assert std_err == ""
+    assert "Hello world" in std_out
+
+    git_checkout(DEFAULT_BRANCH)
