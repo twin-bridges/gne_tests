@@ -4,7 +4,6 @@ from pathlib import Path
 from TEST_CONSTANTS import GIT, REPOSITORY
 
 
-
 def subprocess_runner(cmd_list, exercise_dir):
     with subprocess.Popen(
         cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=exercise_dir
@@ -13,11 +12,21 @@ def subprocess_runner(cmd_list, exercise_dir):
     return (std_out.decode(), std_err.decode(), proc.returncode)
 
 
-def file_dir_exists(directory, filename):
+def file_dir_exists(directory, filename, invert=False):
     """Test that a given file exists in a specified directory."""
     file_path = Path(directory) / filename
-    err_msg = f"Expected file '{filename}' to be in directory '{directory}', but it was not found."
-    assert file_path.is_file(), err_msg
+    if invert:
+        # File does not exist
+        err_msg = (
+            f"Expected file '{directory}/{filename}' to not exist, but it was found?"
+        )
+        assert not file_path.is_file(), err_msg
+    else:
+        # File exists
+        err_msg = (
+            f"Expected file '{directory}/{filename}' to exist, but it was not found."
+        )
+        assert file_path.is_file(), err_msg
 
 
 def git_checkout(commit=None, branch=None):

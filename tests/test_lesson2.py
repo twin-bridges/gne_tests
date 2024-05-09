@@ -36,4 +36,50 @@ def test_exercise4b():
     assert std_err == ""
     assert "Hello world" in std_out
 
+    cmd_list = [GIT, "log", "--oneline"]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+    git_log = std_out.strip()
+    assert return_code == 0
+    assert std_err == ""
+    assert len(git_log.splitlines()) == 2
+
+    git_checkout(DEFAULT_BRANCH)
+
+
+def test_exercise5():
+    commit = "bf05110"
+    git_checkout(commit)
+
+    cmd_list = ["python3", "simple.py"]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+
+    assert return_code == 0
+    assert std_err == ""
+    assert "Hello world" in std_out
+    assert "0" in std_out
+    assert "99" in std_out
+
+    cmd_list = [GIT, "log", "--oneline"]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+    git_log = std_out.strip()
+    assert return_code == 0
+    assert std_err == ""
+    assert len(git_log.splitlines()) == 3
+
+    git_checkout(DEFAULT_BRANCH)
+
+
+def test_exercise6():
+    commit = "bf05110"
+    git_checkout(commit)
+
+    directory = REPOSITORY / "lesson2"
+    file_dir_exists(directory, "not-empty")
+
+    commit = "4b46a05"
+    git_checkout(commit)
+
+    # File should NOT exist here
+    file_dir_exists(directory, "not-empty", invert=True)
+
     git_checkout(DEFAULT_BRANCH)
