@@ -1,13 +1,15 @@
 import pytest
+from pathlib import Path
 from utilities import subprocess_runner, file_dir_exists
 
 GIT = "/usr/bin/git"
+REPOSITORY = Path.home() / "gne_exercises"
 
 
 def test_git_version():
     """Test that git is installed and retrieve its version."""
     cmd_list = [GIT, "--version"]
-    std_out, std_err, return_code = subprocess_runner(cmd_list, ".")
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
     git_version = std_out
 
     assert return_code == 0
@@ -26,17 +28,19 @@ def test_git_version():
 @pytest.mark.parametrize(
     "directory, filename",
     [
-        ("../lesson1", "not-empty"),
-        ("../lesson2", "simple.py"),
-        ("../lesson3", "not-empty"),
-        ("../lesson4", "not-empty"),
-        ("../lesson5", "not-empty"),
-        ("../lesson6", "not-empty"),
-        ("../lesson7", "not-empty"),
+        ("lesson1", "not-empty"),
+        ("lesson2", "simple.py"),
+        ("lesson3", "not-empty"),
+        ("lesson4", "not-empty"),
+        ("lesson5", "not-empty"),
+        ("lesson6", "not-empty"),
+        ("lesson7", "not-empty"),
+        ("bonus1", "not-empty"),
     ],
 )
 def test_lesson_dirs_exists(directory, filename):
     """Test that a given file exists in a specified directory."""
+    directory = REPOSITORY / directory
     file_dir_exists(directory, filename)
 
 
@@ -45,7 +49,7 @@ def test_branch_exists(branch_name):
     """Test that the specified branch exists in the local Git repository."""
 
     cmd_list = [GIT, "branch", "--list"]
-    std_out, std_err, return_code = subprocess_runner(cmd_list, ".")
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
 
     assert return_code == 0
     assert std_err == ""
@@ -61,7 +65,7 @@ def test_repository_is_gne_exercises():
     expected_repo = "gne_exercises"
 
     cmd_list = [GIT, "remote", "get-url", "origin"]
-    std_out, std_err, return_code = subprocess_runner(cmd_list, ".")
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
 
     assert return_code == 0
     assert std_err == ""
@@ -85,12 +89,12 @@ def test_git_user():
     set_user = [GIT, "config", "--global", "user.name", f"{f_name} {l_name}"]
 
     # Set the user (as per the lesson instructions)
-    std_out, std_err, return_code = subprocess_runner(set_user, ".")
+    std_out, std_err, return_code = subprocess_runner(set_user, REPOSITORY)
     assert return_code == 0
     assert std_err == ""
 
     cmd_list = [GIT, "config", "user.name"]
-    std_out, std_err, return_code = subprocess_runner(cmd_list, ".")
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
     assert return_code == 0
     assert std_err == ""
     assert f_name in std_out
@@ -104,12 +108,12 @@ def test_git_email():
     set_email = [GIT, "config", "--global", "user.email", email]
 
     # Set the user (as per the lesson instructions)
-    std_out, std_err, return_code = subprocess_runner(set_email, ".")
+    std_out, std_err, return_code = subprocess_runner(set_email, REPOSITORY)
     assert return_code == 0
     assert std_err == ""
 
     cmd_list = [GIT, "config", "user.email"]
-    std_out, std_err, return_code = subprocess_runner(cmd_list, ".")
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
     assert return_code == 0
     assert std_err == ""
     assert email in std_out
