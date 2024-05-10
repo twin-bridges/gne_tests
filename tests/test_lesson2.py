@@ -93,3 +93,17 @@ def test_exercise6():
         assert commit in std_out, f"Commit not found: {commit}"
 
     git_checkout(DEFAULT_BRANCH)
+
+
+def test_exercise7():
+    hash_val = "4b46a054b616b06fdf5b5f797e76a522fed4764e"
+    cmd_list = [GIT, "cat-file", "-p", hash_val]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+
+    assert return_code == 0
+    assert std_err == ""
+
+    assert "tree acf88e6" in std_out
+    assert "parent bf05110" in std_out
+    assert "author Kirk Byers <ktbyers@twb-tech.com>" in std_out
+    assert "committer Kirk Byers <ktbyers@twb-tech.com>" in std_out
