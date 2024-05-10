@@ -82,4 +82,14 @@ def test_exercise6():
     # File should NOT exist here
     file_dir_exists(directory, "not-empty", invert=True)
 
+    cmd_list = [GIT, "log", "--oneline"]
+    std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY / "lesson2")
+    git_log = std_out.strip()
+    assert return_code == 0
+    assert std_err == ""
+    assert len(git_log.splitlines()) == 4
+
+    for commit in ["4b46a05", "bf05110", "d96bda4", "d9ae421"]:
+        assert commit in std_out, f"Commit not found: {commit}"
+
     git_checkout(DEFAULT_BRANCH)
