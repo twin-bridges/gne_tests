@@ -4,6 +4,12 @@ import shutil
 from datetime import datetime
 
 
+def mv_remotes_gne_exercises(src, dst):
+    print(f"src: {src}, dst: {dst}")
+    moved_path = shutil.move(str(src), str(dst))
+    print(moved_path)
+
+
 @pytest.fixture(scope="session", autouse=True)
 def backup_and_restore_gitconfig():
     # BEFORE TESTS ####
@@ -16,6 +22,12 @@ def backup_and_restore_gitconfig():
     # Create a backup of the original gitconfig if it exists
     if gitconfig.exists():
         shutil.copy(gitconfig, backup_gitconfig)
+
+    # Make sure 'remotes_gne_exercises' dir doesn't exist
+    directory = home / "remotes_gne_exercises"
+    dest_dir = home / "junk1" / f"remotes_gne_exercises.{timestamp}"
+    if directory.exists() and directory.is_dir():
+        mv_remotes_gne_exercises(src=directory, dst=dest_dir)
 
     # TESTS RUN ####
     yield
