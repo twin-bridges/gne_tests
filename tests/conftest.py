@@ -5,9 +5,7 @@ from datetime import datetime
 
 
 def mv_remotes_gne_exercises(src, dst):
-    print(f"src: {src}, dst: {dst}")
-    moved_path = shutil.move(str(src), str(dst))
-    print(moved_path)
+    shutil.move(str(src), str(dst))
 
 
 @pytest.fixture(scope="session", autouse=True)

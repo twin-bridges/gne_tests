@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import re
 
 from utilities import (
     subprocess_runner,
@@ -40,32 +41,46 @@ def test_exercise1():
 
 def test_exercise1b():
     cmd_list = [GIT, "remote", "-v"]
-    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=False)
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
 
     assert "origin" in std_out
     assert "https://github.com/twin-bridges/gne_exercises" in std_out
     assert "fetch" in std_out
     assert "push" in std_out
 
+
+def test_exercise1c():
+    url = "https://github.com/twin-bridges/gne_exercises"
+    cmd_list = [GIT, "remote", "add", "my_remote", url]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+
+    cmd_list = [GIT, "remote", "-v"]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+    assert re.search(rf"my_remote.*{url}.*fetch", std_out)
+    assert re.search(rf"my_remote.*{url}.*push", std_out)
+
+
+def test_exercise1d():
+    cmd_list = [GIT, "fetch", "my_remote"]
+    std_out, std_err, return_code = subprocess_runner(
+        cmd_list, L4_REPOSITORY, check_errors=False
+    )
+
+    assert return_code == 0
+    assert "From https://github.com/twin-bridges/gne_exercises" in std_err
+    assert re.search(r"new branch.*main.*my_remote/main", std_err)
+    assert re.search(r"new branch.*l4\-testing.*my_remote/l4\-testing", std_err)
+
+    cmd_list = [GIT, "branch", "-r"]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+    assert "my_remote/l4-testing" in std_out
+    assert "my_remote/main" in std_out
+    assert "origin/l4-testing" in std_out
+    assert "origin/main" in std_out
+    assert re.search(r"origin/HEAD.*origin/main", std_out)
+
+
 """
-
-
-
-1b. Now change directory into 'remotes_gne_exercises' and use 'git remote -v' to look at your remotes. You should see the following:
-$ git remote -v
-
-1c. Add a new remote named 'my_remote'. Point this remote to the same URL as 'origin'. Verify your remotes using 'git remote -v' after you have configured this.
-
-1d. Use 'git fetch my_remote' to fetch all of the information about 'my_remote'. 
-
-This repository that you cloned should have a "l4-testing" branch. You should be able to see this branch by using the "git branch -r" command.
-# Your output might be different, but you should have 'origin/l4-testing' and 'my_remote/l4-testing'
-$ git branch -r
-  my_remote/l4-testing
-  my_remote/main
-  origin/HEAD -> origin/main
-  origin/l4-testing
-  origin/main
 
 2a. You should be able create a branch named 'l4-testing' that is based upon my 'origin/l4-testing' branch by executing the following command:
 git checkout -b l4-testing origin/l4-testing
