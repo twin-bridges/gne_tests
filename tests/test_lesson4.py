@@ -4,15 +4,11 @@ import re
 
 from utilities import (
     subprocess_runner,
-    git_checkout,
     file_dir_exists,
-    subprocess_runner_stdin,
 )
-from TEST_CONSTANTS import GIT, L4_REPOSITORY, DEFAULT_BRANCH
+from TEST_CONSTANTS import GIT, L4_REPOSITORY
 
-# FIX: fixture remove remotes_gne_exercises after
-# FIX: remotes_gne_exercises doesn't exist at the beginning
-# FIX: very beginning of exercise4 in Drip
+# FIX: text/readability of very beginning of exercise4 in Drip
 
 
 def test_exercise1():
@@ -80,20 +76,29 @@ def test_exercise1d():
     assert re.search(r"origin/HEAD.*origin/main", std_out)
 
 
-"""
+def test_exercise2():
+    cmd_list = [GIT, "checkout", "-b", "l4-testing", "origin/l4-testing"]
+    std_out, std_err, return_code = subprocess_runner(
+        cmd_list, L4_REPOSITORY, check_errors=False
+    )
+    assert return_code == 0
+    assert re.search(r"Switched to a new branch.*l4-testing", std_err)
 
-2a. You should be able create a branch named 'l4-testing' that is based upon my 'origin/l4-testing' branch by executing the following command:
-git checkout -b l4-testing origin/l4-testing
+    cmd_list = [GIT, "branch"]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+    assert re.search(r"\*.l4\-testing", std_out)
 
-2b. Look at your current branch and make sure it is using l4-testing.
+    home = Path.home()
+    directory = home / "remotes_gne_exercises" / "lesson4"
+    filename = "WELCOME.md"
+    file_dir_exists(directory, filename, invert=False)
 
-2c. Look at your current working directory and 'git log' it should be different than what you previously had (on your 'gne_exercises' repository). You should have a file name "WELCOME.md" in the "lesson4" directory.
+    cmd_list = [GIT, "log", "--oneline"]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+    git_log_line1 = std_out.splitlines()[0]
+    assert "89c7b24 Add the WELCOME.md file for Lesson4" in git_log_line1
 
-2d. Execute "git branch -vv" to see the tracking branches. You should have a tracking branch both for the 'main' branch and for the 'l4-testing' branch.
-
-
-We will do additional 'git pull' and 'git push' work once we get your GitHub repository setup in the next lesson.
-
-
-
-"""
+    cmd_list = [GIT, "branch", "-vv"]
+    std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
+    assert re.search(r"\*.l4\-testing.*89c7b24.\[origin.l4\-testing\]", std_out)
+    assert re.search(r"\s*main\s*b1b6939.\[origin.main\]", std_out)

@@ -23,7 +23,7 @@ def backup_and_restore_gitconfig():
 
     # Make sure 'remotes_gne_exercises' dir doesn't exist
     directory = home / "remotes_gne_exercises"
-    dest_dir = home / "junk1" / f"remotes_gne_exercises.{timestamp}"
+    dest_dir = home / f"remotes_gne_exercises.{timestamp}"
     if directory.exists() and directory.is_dir():
         mv_remotes_gne_exercises(src=directory, dst=dest_dir)
 
