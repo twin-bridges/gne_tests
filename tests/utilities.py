@@ -58,12 +58,14 @@ def file_dir_exists(directory, filename, invert=False):
         assert file_path.is_file(), err_msg
 
 
-def git_checkout(commit=None, branch=None):
+def git_checkout(commit=None, branch=None, tag=None):
     """Checkout a specific Git commit"""
     if commit:
         cmd_list = [GIT, "checkout", commit]
     elif branch:
         cmd_list = [GIT, "checkout", branch]
+    elif tag:
+        cmd_list = [GIT, "checkout", tag]
     std_out, std_err, return_code = subprocess_runner(cmd_list, REPOSITORY)
     if return_code != 0:
         # Checkout in detatched head will have output on std_err normally.
