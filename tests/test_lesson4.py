@@ -8,8 +8,6 @@ from utilities import (
 )
 from TEST_CONSTANTS import GIT, L4_REPOSITORY
 
-# FIX: text/readability of very beginning of exercise4 in Drip
-
 
 def test_exercise1():
     """Test that git is installed and retrieve its version."""
