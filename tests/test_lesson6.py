@@ -21,7 +21,6 @@ def commit_change(file_name):
 
 
 def test_exercise1a():
-
     commit = "983a8b7"
     git_checkout(commit)
 
@@ -41,14 +40,12 @@ def test_exercise1a():
 
 
 def test_exercise1b():
-
     cmd_list = [GIT, "tag", "--list"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     assert "v0.1" in std_out
 
 
 def test_exercise2a():
-
     cmd_list = [GIT, "config", "--global", "init.defaultBranch", "test123"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
 
@@ -65,7 +62,6 @@ def test_exercise2a():
 
 
 def test_exercise2b():
-
     cmd_list = [GIT, "config", "--list"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     assert "init.defaultbranch=main" in std_out
@@ -73,7 +69,6 @@ def test_exercise2b():
 
 
 def test_exercise2c():
-
     cmd_list = [GIT, "config", "pull.rebase", "false"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
 
@@ -83,7 +78,6 @@ def test_exercise2c():
 
 
 def test_exercise2d():
-
     cmd_list = [GIT, "config", "--list", "--global"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     assert "init.defaultbranch=main" in std_out
@@ -94,7 +88,6 @@ def test_exercise2d():
 
 
 def test_exercise3():
-
     # Ex 3a
     cmd_list = [GIT, "log", "--oneline"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
