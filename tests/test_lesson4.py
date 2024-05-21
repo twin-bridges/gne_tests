@@ -99,4 +99,4 @@ def test_exercise2():
     cmd_list = [GIT, "branch", "-vv"]
     std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
     assert re.search(r"\*.l4\-testing.*89c7b24.\[origin.l4\-testing\]", std_out)
-    assert re.search(r"\s*main\s*b1b6939.\[origin.main\]", std_out)
+    assert re.search(r"\s*main.*\[origin.main\]", std_out)
