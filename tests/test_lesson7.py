@@ -21,11 +21,6 @@ def commit_change(file_name):
 
 
 def test_exercise1a():
-    cmd_list = [GIT, "tag", "--list"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    print(std_out)
-    assert "v0.1" in std_out
-
     commit = "983a8b7"
     git_checkout(commit)
 

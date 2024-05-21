@@ -6,7 +6,7 @@ from utilities import (
     subprocess_runner,
     file_dir_exists,
 )
-from TEST_CONSTANTS import GIT, L4_REPOSITORY
+from TEST_CONSTANTS import GIT, L4_REPOSITORY, HOME
 
 
 def test_exercise1():
@@ -14,7 +14,7 @@ def test_exercise1():
 
     test_dir = Path.cwd()
 
-    home = Path.home()
+    home = HOME
     os.chdir(home)
 
     directory = home / "remotes_gne_exercises"
@@ -86,7 +86,7 @@ def test_exercise2():
     std_out, _, _ = subprocess_runner(cmd_list, L4_REPOSITORY, check_errors=True)
     assert re.search(r"\*.l4\-testing", std_out)
 
-    home = Path.home()
+    home = HOME
     directory = home / "remotes_gne_exercises" / "lesson4"
     filename = "WELCOME.md"
     file_dir_exists(directory, filename, invert=False)

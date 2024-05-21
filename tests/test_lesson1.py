@@ -1,9 +1,6 @@
 import pytest
-from pathlib import Path
 from utilities import subprocess_runner, file_dir_exists
-
-GIT = "/usr/bin/git"
-REPOSITORY = Path.home() / "gne_exercises"
+from TEST_CONSTANTS import GIT, REPOSITORY
 
 
 def test_git_version():
