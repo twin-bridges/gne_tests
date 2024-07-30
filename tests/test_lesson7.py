@@ -1,5 +1,3 @@
-import re
-
 from utilities import subprocess_runner, git_checkout
 from TEST_CONSTANTS import GIT, REPOSITORY
 
@@ -21,117 +19,93 @@ def commit_change(file_name):
 
 
 def test_exercise1a():
-    commit = "983a8b7"
-    git_checkout(commit)
-
-    cmd_list = [GIT, "log", "--oneline"]
+    # Ex 1a
+    cmd_list = [GIT, "config", "pull.rebase"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    git_log_line1 = std_out.splitlines()[0]
-    assert re.search(r"983a8b7 Tag exercise", std_out)
+    assert "false" in std_out
 
-    git_checkout(tag="v0.1")
-
-    cmd_list = [GIT, "log", "--oneline"]
+    commit = "b613a36"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    git_log_line1 = std_out.splitlines()[0]
-    assert re.search(r"983a8b7 Tag exercise", git_log_line1)
 
-    git_checkout(branch="main")
+    commit_msg = std_out.splitlines()[0]
+    assert "Adding 'show_run.py program" in commit_msg
+
+    commit = "a021525"
+    cmd_list = [GIT, "log", "--oneline", commit]
+    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
+    commit_msg = std_out.splitlines()[0]
+
+    assert "Adding a comment to 'show_run.py' program" in commit_msg
 
 
 def test_exercise1b():
-    cmd_list = [GIT, "tag", "--list"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "v0.1" in std_out
-
-
-def test_exercise2a():
-    cmd_list = [GIT, "config", "--global", "init.defaultBranch", "test123"]
+    commit = "a50bc2b"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
 
-    cmd_list = [GIT, "config", "init.defaultBranch"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "test123" in std_out
+    commit_msg = std_out.splitlines()[0]
+    assert "Adding 'proxy.py' SSH connection program" in commit_msg
 
-    cmd_list = [GIT, "config", "--global", "init.defaultBranch", "main"]
+
+def test_exercise1c():
+    cmd_list = [GIT, "config", "merge.ff"]
+    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
+    assert "false" in std_out
+
+
+def test_exercise1e():
+    commit = "65b04d3"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
 
-    cmd_list = [GIT, "config", "init.defaultBranch"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "main" in std_out
+    commit0, commit1, commit2, commit3 = std_out.splitlines()[:4]
+    assert "65b04d3 Merge branch 'feature/proxy'" in commit0
+    assert "a50bc2b Adding 'proxy.py' SSH connection program" in commit1
+    assert "b1b6939 Lesson6, exercise3 reference solution" in commit2
+    assert "1f62d32 Lesson6, ex3" in commit3
 
 
 def test_exercise2b():
-    cmd_list = [GIT, "config", "--list"]
+    commit = "fc21498"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "init.defaultbranch=main" in std_out
-    assert "core.bare=false" in std_out
+    commit0, commit1, commit2, commit3 = std_out.splitlines()[:4]
 
-
-def test_exercise2c():
-    cmd_list = [GIT, "config", "pull.rebase", "false"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-
-    cmd_list = [GIT, "config", "--list"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "pull.rebase=false" in std_out
+    assert "Adding a comment to 'show_run.py' program" in commit0
+    assert "208cf63 Adding 'show_run.py program" in commit1
 
 
 def test_exercise2d():
-    cmd_list = [GIT, "config", "--list", "--global"]
+    commit = "351963c"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "init.defaultbranch=main" in std_out
+    commit0, commit1, commit2, commit3 = std_out.splitlines()[:4]
 
-    cmd_list = [GIT, "config", "--list", "--local"]
+    assert "Merge branch 'feature/show-run'" in commit0
+    assert "Adding a comment to 'show_run.py' program" in commit1
+
+
+def test_exercise3b():
+    commit = "b1b6939"
+    cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "pull.rebase=false" in std_out
+    commit0 = std_out.splitlines()[0]
 
+    assert "Lesson6, exercise3 reference solution" in commit0
 
-def test_exercise3():
-    # Ex 3a
+    branch = "feature/proxy"
+    git_checkout(branch=branch)
+
     cmd_list = [GIT, "log", "--oneline"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    first_line = std_out.splitlines()[0]
-    original_commit = first_line.split()[0]
+    commit0 = std_out.splitlines()[0]
+    assert "Adding 'proxy.py' SSH connection program" in commit0
 
-    file_name = "test_lesson6_ex3.txt"
-    cmd_list = ["touch", file_name]
+    branch = "feature/show-run"
+    git_checkout(branch=branch)
+
+    cmd_list = [GIT, "log", "--oneline"]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-
-    commit_change(file_name)
-
-    # Ex 3b
-    cmd_list = [GIT, "reset", "--soft", "HEAD~1"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-
-    # Soft reset should restore the change to staging
-    cmd_list = [GIT, "status"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    pattern = re.escape(r"new file:   test_lesson6_ex3.txt")
-    assert re.search(pattern, std_out)
-
-    # Ex 3c
-    commit_change(file_name)
-
-    # Ex 3d
-    cmd_list = [GIT, "reset", "--mixed", "HEAD~1"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-
-    # Mixed reset should undo the commit and revert staging (unstage the file)
-    cmd_list = [GIT, "status"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "Untracked files:" in std_out
-    assert """use "git add <file>..." to include""" in std_out
-    assert "test_lesson6_ex3.txt" in std_out
-
-    # Ex 3e
-    commit_change(file_name)
-
-    # Ex 3f
-    cmd_list = [GIT, "reset", "--hard", "HEAD~1"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert f"HEAD is now at {original_commit}" in std_out
-
-    cmd_list = [GIT, "status"]
-    std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
-    assert "nothing to commit, working tree clean" in std_out
+    commit0 = std_out.splitlines()[0]
+    assert "Adding a comment to 'show_run.py' program" in commit0
