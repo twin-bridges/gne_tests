@@ -109,3 +109,6 @@ def test_exercise3b():
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     commit0 = std_out.splitlines()[0]
     assert "Adding a comment to 'show_run.py' program" in commit0
+
+    branch = "main"
+    git_checkout(branch=branch)
