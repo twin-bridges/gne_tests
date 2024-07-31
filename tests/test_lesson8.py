@@ -37,7 +37,7 @@ def test_exercise1b():
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     commit_msg = std_out.splitlines()[0]
 
-    assert "Testing commit amend (modified)"
+    assert "Testing commit amend (modified)" in commit_msg
 
 
 def test_exercise1c():
@@ -46,7 +46,7 @@ def test_exercise1c():
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
     commit_msg = std_out.splitlines()[0]
 
-    assert "Testing commit amend (modified again)"
+    assert "Testing commit amend (modified again)" in commit_msg
 
 
 def test_exercise2a():
@@ -70,6 +70,7 @@ def test_exercise2b():
     assert "rebase interactive commit2 (modified)" in commit2
     assert "rebase interactive commit1" in commit1
 
+
 def test_exercise2c(directory="lesson8", filename="test_file.py"):
     commit = "6d7dd41"
     cmd_list = [GIT, "log", "--oneline", commit]
@@ -83,6 +84,7 @@ def test_exercise2c(directory="lesson8", filename="test_file.py"):
     directory = REPOSITORY / directory
     file_dir_exists(directory, filename)
 
+
 def test_exercise2d():
     commit = "45c93e9"
     cmd_list = [GIT, "log", "--oneline", commit]
@@ -91,6 +93,7 @@ def test_exercise2d():
     commit3, commit2_1 = std_out.splitlines()[:2]
     assert "rebase interactive commit3 (amended test_file.py)" in commit3
     assert "rebase interactive commit1 & commit2 (modified)" in commit2_1
+
 
 def test_exercise2e():
     commit = "7636b66"
@@ -111,6 +114,7 @@ def test_exercise2e():
     assert "rebase interactive commit3 (amended test_file.py)" in commit3
     assert "rebase interactive commit1 & commit2 (modified)" in commit2_1
 
+
 def test_exercise3a(directory="lesson8", filename="reflog.txt"):
     """Test that a given file exists in a specified directory."""
     directory = REPOSITORY / directory
@@ -126,8 +130,8 @@ def test_exercise3a(directory="lesson8", filename="reflog.txt"):
     assert "rebase interactive commit3 (amended test_file.py)" in commit3
     assert "rebase interactive commit1 & commit2 (modified)" in commit2_1
 
-def test_exercise3c():
 
+def test_exercise3c():
     commit = "7636b66"
     cmd_list = [GIT, "log", "--oneline", commit]
     std_out, _, _ = subprocess_runner(cmd_list, REPOSITORY, check_errors=True)
